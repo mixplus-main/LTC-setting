@@ -4,10 +4,7 @@ import java.util.Scanner;
 
 
 public class Logic {
-    MotionCalc calc = new MotionCalc();
     public void logic() {
-        System.out.println("Logic");
-
 
         Scanner sc = new Scanner(System.in);
 
@@ -17,19 +14,13 @@ public class Logic {
         System.out.print("num y:");
         String num_y = sc.nextLine();
 
-        try {
-            calc.add_z(Integer.parseInt(num_z));
-            calc.add_y(Integer.parseInt(num_y));
-        } catch (NumberFormatException e) {
-            System.out.println("Only integer data types are supported");
-            System.out.println("\u001B[31m" + e + "\u001B[0m");
-            return;
-        }
+        MotionCalc.Vec v = MotionCalc.calc(Integer.parseInt(num_z), Integer.parseInt(num_y));
 
-        double z = calc.getZ();
-        double y = calc.getY();
-        System.out.println("motion\nz:" + z + "\ny:" + y);
-        System.out.printf("[0, %f, %f]".formatted(y,z));
+
+        System.out.println(v.y);
+        System.out.println(v.z);
+        System.out.println("motion\nz:" + v.z + "\ny:" + v.y);
+        System.out.printf("[0.0, %f, %f]".formatted(v.y,v.z));
 
 
 
