@@ -1,14 +1,17 @@
+
+
 plugins {
     java
     application
 }
 
 group = "com.mixplus"
-version = "1.0-SNAPSHOT"
+version = "1.0"
 
 repositories {
     mavenCentral()
 }
+
 
 dependencies {
     testImplementation(platform("org.junit:junit-bom:6.0.0"))
@@ -23,6 +26,12 @@ tasks.withType<JavaExec> {
 
 application {
     mainClass.set("com.mixplus.Main")
+}
+
+tasks.jar {
+    manifest {
+        attributes["Main-Class"] = "com.mixplus.Main"
+    }
 }
 
 tasks.test {
