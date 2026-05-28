@@ -53,9 +53,57 @@ public class GUI extends JFrame{
             result_box.setText("[0.0, %f, %f]".formatted(v.y,v.z));
         });
 
-        Label targetText = new Label("Target");
-        targetText.setBounds(650,20,100,40);
-        targetText.setFont(new Font("Arial", Font.PLAIN, 20));
+        Label OriginText = new Label("Origin");
+        OriginText.setBounds(650,20,100,25);
+        OriginText.setFont(new Font("Arial", Font.PLAIN, 18));
+
+        Label Origin_z = new Label("Z:");
+        Origin_z.setBounds(580,60,20,15);
+        Origin_z.setFont(new Font("Arial", Font.PLAIN, 18));
+
+        TextBox Origin_z_box = new TextBox();
+        Origin_z_box.setBounds(600,54,200,26);
+        Origin_z_box.setFont(new Font("Arial", Font.PLAIN, 15));
+
+        Label Origin_y = new Label("Y:");
+        Origin_y.setBounds(580,90,20,15);
+        Origin_y.setFont(new Font("Arial", Font.PLAIN, 18));
+
+        TextBox Origin_y_box = new TextBox();
+        Origin_y_box.setBounds(600,84,200,26);
+        Origin_y_box.setFont(new Font("Arial", Font.PLAIN, 15));
+
+
+
+        Label TargetText = new Label("Target");
+        TargetText.setBounds(650,120,70,20);
+        TargetText.setFont(new Font("Arial", Font.PLAIN, 20));
+
+        Label Target_z = new Label("Z:");
+        Target_z.setBounds(580,154,20,15);
+        Target_z.setFont(new Font("Arial", Font.PLAIN, 18));
+
+        TextBox Target_z_box = new TextBox();
+        Target_z_box.setBounds(600,150,200,26);
+        Target_z_box.setFont(new Font("Arial", Font.PLAIN, 15));
+
+        Label Target_y = new Label("Y:");
+        Target_y.setBounds(580,182,20,15);
+        Target_y.setFont(new Font("Arial", Font.PLAIN, 18));
+
+        TextBox Target_y_box = new TextBox();
+        Target_y_box.setBounds(600,178,200,26);
+        Target_y_box.setFont(new Font("Arial", Font.PLAIN, 15));
+
+        Button test = new Button("test");
+        test.setBounds(500,500,30,30);
+        test.setFont(new Font("Arial", Font.PLAIN, 18));
+
+        test.addActionListener(e -> {
+            System.out.println(Origin_y_box.getText());
+        });
+
+
 
 
 
@@ -67,7 +115,17 @@ public class GUI extends JFrame{
         frame.add(Calc);
         frame.add(result);
         frame.add(result_box);
-        frame.add(targetText);
+        frame.add(OriginText);
+        frame.add(Origin_z);
+        frame.add(Origin_z_box);
+        frame.add(Origin_y);
+        frame.add(Origin_y_box);
+        frame.add(TargetText);
+        frame.add(Target_z);
+        frame.add(Target_z_box);
+        frame.add(Target_y);
+        frame.add(Target_y_box);
+        frame.add(test);
     }
 
 }
