@@ -101,6 +101,7 @@ public class GUI extends JFrame{
 
         test.addActionListener(e -> {
             System.out.println(Origin_y_box.getText());
+            System.out.println();
         });
 
 
