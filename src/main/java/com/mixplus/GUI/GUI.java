@@ -45,13 +45,6 @@ public class GUI extends JFrame{
         result_box.setBounds(200, 100, 300, 30);
 
 
-        Calc.addActionListener(e -> {
-            int z = Integer.parseInt(z_box.getText());
-            int y = Integer.parseInt(y_box.getText());
-            MotionCalc.Vec v = MotionCalc.calc(Integer.parseInt(String.valueOf(z)), Integer.parseInt(String.valueOf(y)));
-            result.setText("result: [0.0, %f, %f]".formatted(v.y,v.z));
-            result_box.setText("[0.0, %f, %f]".formatted(v.y,v.z));
-        });
 
         Label OriginText = new Label("Origin");
         OriginText.setBounds(650,20,100,25);
@@ -95,9 +88,6 @@ public class GUI extends JFrame{
         Target_y_box.setBounds(600,178,200,26);
         Target_y_box.setFont(new Font("Arial", Font.PLAIN, 15));
 
-        Button test = new Button("test");
-        test.setBounds(500,500,30,30);
-        test.setFont(new Font("Arial", Font.PLAIN, 18));
 
 
         //diff calc gui
@@ -121,14 +111,18 @@ public class GUI extends JFrame{
         Diff_y_box.setBounds(600,260,200,26);
         Diff_y_box.setFont(new Font("Arial", Font.PLAIN, 15));
 
-        test.addActionListener(e -> {
-            System.out.println(Origin_y_box.getText());
-            System.out.println();
+
+        Calc.addActionListener(e -> {
+            int z = Integer.parseInt(z_box.getText());
+            int y = Integer.parseInt(y_box.getText());
+            MotionCalc.Vec v = MotionCalc.calc(Integer.parseInt(String.valueOf(z)), Integer.parseInt(String.valueOf(y)));
+            result.setText("result: [0.0, %f, %f]".formatted(v.y,v.z));
+            result_box.setText("[0.0, %f, %f]".formatted(v.y,v.z));
+
+
+
 
         });
-
-
-
 
 
         frame.add(MotionCalcText);
@@ -154,7 +148,6 @@ public class GUI extends JFrame{
         frame.add(Diff_z_box);
         frame.add(Diff_y);
         frame.add(Diff_y_box);
-        frame.add(test);
     }
 
 }

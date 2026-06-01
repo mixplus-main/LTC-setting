@@ -35,6 +35,8 @@ public class Logic {
                 UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
             } catch (Exception ignored) {}
             GUI GUI = new GUI();
+            CountCalc c = new CountCalc(0,50,1);
+            System.out.println(c.GetCount());
         }
 
     }
