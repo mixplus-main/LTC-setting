@@ -17,5 +17,10 @@ public class Label extends JLabel {
         setFont(new Font("Arial", Font.PLAIN, 14));
     }
 
+    public Label font(String name, int style, int size) {
+        setFont(new Font(name, style, size));
+        return this;
+    }
+
 
 }

@@ -1,12 +1,17 @@
 package com.mixplus.logic;
 
 import com.mixplus.GUI.GUI;
+
 import java.util.Scanner;
 import javax.swing.*;
 
 
 public class Logic {
     public void logic() {
+
+        LoopCalc loopcalc = new LoopCalc(-1, 102, 500, 88);
+        System.out.println("Z:" + loopcalc.getZCount());
+        System.out.println("Y:" + loopcalc.getYCount());
 
         Scanner sc = new Scanner(System.in);
 

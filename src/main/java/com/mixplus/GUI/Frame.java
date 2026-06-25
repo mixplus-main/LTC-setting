@@ -8,15 +8,16 @@ public class Frame extends JFrame {
     public Frame() {
 
         setTitle("LTC7-setting");
-        setSize(900, 600);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setLayout(null);
-        setLocationRelativeTo(null);
+        setLayout(new BorderLayout());
 
-        getContentPane().setBackground(new Color(0x1E1E1E));
+        //getContentPane().setBackground(new Color(0x1E1E1E));
+        getContentPane().setBackground(Color.BLACK);
     }
 
     public void run() {
+        pack();
+        setLocationRelativeTo(null);
         setVisible(true);
     }
 }
