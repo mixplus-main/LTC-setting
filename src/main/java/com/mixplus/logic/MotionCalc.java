@@ -5,28 +5,25 @@ package com.mixplus.logic;
 
 public class MotionCalc {
     // z加速1回分
-    private static final double Z_Y = -0.1282440322;
-    private static final double Z_Z = 6.2604024704;
-
+    private static final double ZZ = 8.738166741870494d;
+    private static final double ZY = 0.0d;
     // y加速1回分
-    private static final double Y_Y = 1.8951126165;
-    private static final double Y_Z = 4.9869190454;
+    private static final double YZ = 4.782571109309145d;
+    private static final double YY = 4.029528112788979d;
 
-    public static class Vec {
-        public double y;
-        public double z;
+    private final int nZ;
+    private final int nY;
 
-        public Vec(double y, double z) {
-            this.y = y;
-            this.z = z;
-        }
+    public MotionCalc(int nZ, int nY) {
+        this.nZ = nZ;
+        this.nY = nY;
     }
 
-    public static Vec calc(int nZ, int nY) {
+    public double getZ() {
+        return nZ * ZZ + nY * YZ;
+    }
 
-        double vY = nZ * Z_Y + nY * Y_Y;
-        double vZ = nZ * Z_Z + nY * Y_Z;
-
-        return new Vec(vY, vZ);
+    public double getY() {
+        return nZ * ZY + nY * YY;
     }
 }

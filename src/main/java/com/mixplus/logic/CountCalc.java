@@ -1,42 +1,83 @@
 package com.mixplus.logic;
 
 public class CountCalc {
-    private final double ZCount;
-    private final double YCount;
+    private int CountZ;
+    private int CountY;
+    private final String binaryZ;
+    private final String binaryY;
+    private double dz;
+    private double dy;
 
-    private static final double ZZ = 8.719162353796259 * 0.9;
-    private static final double ZY = 0.010813717832597134 * 1.5;
+    private boolean error = false;
+
+    // z加速1回分
+    private static final double ZZ = 8.738166741870494d;
+    private static final double ZY = 0.0d;
     // y加速1回分
-    private static final double YZ = 4.185329931870182 * 0.9;
-    private static final double YY = 4.708496168414073 * 1.5;
-
+    private static final double YZ = 4.782571109309145d;
+    private static final double YY = 4.029528112788979d;
 
     public CountCalc(double OriginZ, double OriginY, double TargetZ, double TargetY) {
-        double DiffZ = TargetZ - OriginZ;
-        double DiffY = TargetY - OriginY;
+        System.out.println("start");
+        double DiffZ = (TargetZ - OriginZ);
+        double DiffY = ((TargetY + 95) - OriginY) / 1.5;
+        dz = DiffZ;
+        dy = DiffY;
 
-        double det = ZZ * YY - YZ * ZY;
+        if (dz < 0 || dy < 0 || Math.abs(dz) <= 10 && Math.abs(dy) <= 10 || DiffZ < 107) {
+            error = true;
+            binaryZ = "error";
+            binaryY = "error";
 
-        ZCount = (DiffZ * YY - DiffY * YZ) / det;
-        YCount = (ZZ * DiffY - ZY * DiffZ) / det;
-        System.out.println("OriginZ=" + OriginZ);
-        System.out.println("TargetZ=" + TargetZ);
-        System.out.println("OriginY=" + OriginY);
-        System.out.println("TargetY=" + TargetY);
+            dz = 00.00;
+            dy = 00.00;
 
-        System.out.println("DiffZ=" + DiffZ);
-        System.out.println("DiffY=" + DiffY);
+            return;
+        }
+        CountY = (int)Math.ceil(DiffY / YY);
+        double UsedZ = CountY * YZ;
+        System.out.println("UsedZ" +UsedZ);
+        double RemainZ = DiffZ - UsedZ;
+        System.out.println("RemainZ" +RemainZ);
+
+        if (Math.abs(RemainZ) < ZZ) {
+            CountZ = 0;
+        } else {
+            CountZ = (int)Math.round((RemainZ / ZZ) * 1.13);
+        }
+
+
+
+        binaryZ = String.format(
+                "%10s", Integer.toBinaryString(CountZ))
+                .replace(' ', '0');
+
+        binaryY = String.format(
+                "%10s", Integer.toBinaryString(CountY))
+                .replace(' ', '0');
 
     }
-
-
-
-    public double getZCount() {
-        return ZCount;
+    public int getZCount() {
+        return CountZ;
     }
 
-    public double getYCount() {
-        return YCount;
+    public int getYCount() {
+        return CountY;
     }
 
+    public String getBinaryZ() {return binaryZ; }
+
+    public String getBinaryY() {return binaryY; }
+
+    public double getDz() {
+        return dz;
+    }
+
+    public double getDy() {
+        return dy;
+    }
+
+    public boolean getError() {
+        return error;
+    }
 }

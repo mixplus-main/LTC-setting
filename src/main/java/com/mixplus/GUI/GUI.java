@@ -1,22 +1,48 @@
 package com.mixplus.GUI;
 
 
-import com.mixplus.logic.LoopCalc;
+import com.mixplus.Config;
+import com.mixplus.logic.CountCalc;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 import java.util.Objects;
 import javax.swing.*;
 import javax.swing.table.TableModel;
 import java.awt.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 public class GUI{
+    private static final Logger logger = Logger.getLogger(GUI.class.getName());
+    private CountCalc countcalc;
     private colors color;
-    private final Frame frame;
-    private JPanel panel;
 
-    public GUI() {
+    private final Frame frame;
+    private JPanel binaryPanel;
+
+    private final ImageIcon zero = new ImageIcon(
+            new ImageIcon(
+                    Objects.requireNonNull(getClass()
+                            .getResource("/binary/0.png")))
+                    .getImage()
+                    .getScaledInstance(48, 48, Image.SCALE_SMOOTH)
+    );
+
+    private final ImageIcon one = new ImageIcon(
+            new ImageIcon(
+                    Objects.requireNonNull(getClass()
+                            .getResource("/binary/1.png")))
+                    .getImage()
+                    .getScaledInstance(48, 48, Image.SCALE_SMOOTH)
+    );
+
+    private final Config config;
+
+    public GUI(Config config) {
+        this.config = config;
         frame = new Frame();
         frame.setBackground(colors.MAIN_BG);
         init();
@@ -26,20 +52,12 @@ public class GUI{
     }
 
     private void init() {
-        panel = new JPanel(new BorderLayout());
+        JPanel panel = new JPanel(new BorderLayout());
         panel.setBackground(colors.MAIN_BG);
 
+        binaryPanel = createBinaryPanel();
+        panel.add(binaryPanel, BorderLayout.SOUTH);
 
-
-        ImageIcon zero = new ImageIcon(
-                Objects.requireNonNull(GUI.class.getResource("/binary/0.png"))
-        );
-        ImageIcon one = new ImageIcon(
-                Objects.requireNonNull(GUI.class.getResource("/binary/1.png"))
-        );
-
-        //panel.add(new JLabel(zero), BorderLayout.NORTH);
-        //panel.add(new JLabel(one), BorderLayout.SOUTH);
         JTable table = createTable();
 
 
@@ -50,17 +68,6 @@ public class GUI{
         panel.add(scroll, BorderLayout.CENTER);
 
         frame.setContentPane(panel);
-
-
-        //JPanel headerRow = createHeaderRow();
-        //JPanel inputRow = createInputRow();
-
-        /*
-            Diff_z_box.setText(String.valueOf(loopCalc.getDz()));
-            Diff_y_box.setText(String.valueOf(loopCalc.getDy()));
-
-        });*/
-
 
     }
 
@@ -75,8 +82,11 @@ public class GUI{
         };
 
         Object[][] data = {
-                {"Z", "0", "0", "0", "0"},
-                {"Y", "0", "0", "0", "0"}
+                {"Z", config.getString("OriginZ", "0"),
+                        config.getString("TargetZ", "0"), "0", "0"},
+
+                {"Y", config.getString("OriginY", "0"),
+                        config.getString("TargetY", "0"), "0", "0"}
         };
         JTable table = new JTable(data, columns);
         TableModel model = table.getModel();
@@ -99,7 +109,6 @@ public class GUI{
                 );
         table.setShowGrid(true);
         table.setGridColor(Color.WHITE);
-        //table.setBorder(BorderFactory.createLineBorder(Color.WHITE));
 
 
 
@@ -122,11 +131,17 @@ public class GUI{
                     Object OriginZ = model.getValueAt(0, 1);
                     Object OriginY = model.getValueAt(1, 1);
 
+                    config.set("OriginZ", OriginZ);
+                    config.set("OriginY", OriginY);
+
                     //get Target
                     Object TargetZ = model.getValueAt(0, 2);
                     Object TargetY = model.getValueAt(1, 2);
 
-                    LoopCalc loopCalc = new LoopCalc(
+                    config.set("TargetZ", TargetZ);
+                    config.set("TargetY", TargetY);
+
+                    countcalc = new CountCalc(
                             Double.parseDouble((String) OriginZ),
                             Double.parseDouble((String) OriginY),
                             Double.parseDouble((String) TargetZ),
@@ -134,11 +149,27 @@ public class GUI{
                     );
 
                     //get Diff
-                    model.setValueAt(loopCalc.getDz(), 0, 3);
-                    model.setValueAt(loopCalc.getDy(), 1, 3);
+                    model.setValueAt(countcalc.getDz(), 0, 3);
+                    model.setValueAt(countcalc.getDy(), 1, 3);
 
-                    model.setValueAt(loopCalc.getZCount(), 0, 4);
-                    model.setValueAt(loopCalc.getYCount(), 1, 4);
+
+                    model.setValueAt(countcalc.getZCount(), 0, 4);
+                    model.setValueAt(countcalc.getYCount(), 1, 4);
+
+
+
+                    boolean binaryUpdate = BinaryUpdate(
+                            countcalc.getBinaryZ(), countcalc.getBinaryY()
+                    );
+
+                    if (!binaryUpdate) {
+                        model.setValueAt("error", 0, 3);
+                        model.setValueAt("error", 1, 3);
+                    }
+
+                    try {config.save();} catch (IOException er) {
+                        logger.log(Level.SEVERE, "Failed to save file", er);
+                    }
 
                 }
             }
@@ -148,63 +179,50 @@ public class GUI{
         return table;
     }
 
-    public JPanel createHeaderRow() {
-        JPanel headerRow = new JPanel(new GridLayout(1,5));
+    public JPanel createBinaryPanel() {
+        JPanel binaryPanel = new JPanel(new GridLayout(2, 11));
 
-        headerRow.add(new Label(""));
-        headerRow.add(new Label("Origin  "));
-        headerRow.add(new Label("Target"));
-        headerRow.add(new Label(" Diff"));
-        headerRow.add(new Label("count"));
+        binaryPanel.add(new JLabel("Z"))
+                .setFont(new Font("Arial", Font.PLAIN, 20));
+        for (int i = 0; i < 10; i++) {
+            binaryPanel.add(new JLabel(zero));
+        }
 
-        panel.add(headerRow);
-        return headerRow;
+        binaryPanel.add(new Label("Y"))
+                .setFont(new Font("Arial", Font.PLAIN, 20));
+        for (int i = 0; i < 10; i++) {
+            binaryPanel.add(new JLabel(zero));
+        }
+
+        return binaryPanel;
     }
 
+    public boolean BinaryUpdate(String binaryZ, String binaryY) {
+        if (binaryZ.equals("error") || binaryY.equals("error")) {
+            return false;
+        }
+        binaryPanel.removeAll();
+        binaryPanel.revalidate();
+        binaryPanel.repaint();
 
-    public JPanel createInputRow() {
-        JPanel inputRow = new JPanel(new GridLayout(2, 5));
+        binaryPanel.add(new JLabel("Z"))
+                .setFont(new Font("Arial", Font.PLAIN, 14));
+        for (char bit : binaryZ.toCharArray()) {
+            binaryPanel.add(
+                    new JLabel(bit == '0' ? zero : one)
+            );
+        }
 
-
-
-
-
-
-        //Z
-        Label labelZ = new Label("    Z");
-
-        TextBox originZ = new TextBox();
-        TextBox targetZ = new TextBox();
-
-        TextBox diffZ = new TextBox();
-        TextBox countZ = new TextBox();
-
-        //y
-        Label labelY = new Label("    Y");
-
-        TextBox originY = new TextBox();
-        TextBox targetY = new TextBox();
-
-        TextBox diffY = new TextBox();
-        TextBox countY = new TextBox();
-
-        inputRow.add(labelZ);
-        inputRow.add(originZ);
-        inputRow.add(targetZ);
-        inputRow.add(diffZ);
-        inputRow.add(countZ);
-
-        inputRow.add(labelY);
-        inputRow.add(originY);
-        inputRow.add(targetY);
-        inputRow.add(diffY);
-        inputRow.add(countY);
-
-        panel.add(inputRow);
-
-
-        frame.add(panel, BorderLayout.CENTER);
-        return inputRow;
+        binaryPanel.add(new JLabel("Y"))
+                .setFont(new Font("Arial", Font.PLAIN, 20));
+        for (char bit : binaryY.toCharArray()) {
+            binaryPanel.add(
+                    new JLabel(bit == '0' ? zero : one)
+            );
+        }
+        System.out.println("updated");
+        binaryPanel.revalidate();
+        binaryPanel.repaint();
+        return true;
     }
-
 }
